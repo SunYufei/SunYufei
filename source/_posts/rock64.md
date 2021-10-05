@@ -35,7 +35,7 @@ deb https://mirrors.tuna.tsinghua.edu.cn/armbian buster main buster-utils buster
 
 安装 samba
 
-```shell
+```sh
 sudo apt install samba
 ```
 
@@ -43,7 +43,7 @@ sudo apt install samba
 
 添加 samba 用户
 
-```shell
+```bash
 sudo smbpasswd -a user
 ```
 
@@ -123,3 +123,36 @@ exit 0
 ```shell
 sudo ./run.sh start
 ```
+
+## qbittorrent-nox
+
+安装
+
+```sh
+sudo apt install qbittorrent-nox
+```
+
+修改 `/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
+
+```conf
+[Unit]
+    Description = qbittorrent-nox
+    After = network.target
+[Service]
+    User = root
+    Type = forking
+    RemainAfterExit = yes
+    ExecStart = /usr/bin/qbittorrent-nox -d
+[Install]
+    WantedBy = multi-user.target
+```
+
+启动服务并设置开机启动
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable qbittorrent-nox
+sudo systemctl start qbittorrent-nox
+```
+
+默认登录网址：`ip:8080`，用户名：`admin`，密码：`adminadmin`
