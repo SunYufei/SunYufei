@@ -4,6 +4,8 @@ categories: Rock64
 date: 2021-10-05
 ---
 
+> 手中有个 Rock64 开发板，记录一下配置过程
+
 <!--more-->
 
 ## 镜像源
@@ -35,15 +37,19 @@ deb https://mirrors.tuna.tsinghua.edu.cn/armbian buster main buster-utils buster
 
 安装 samba
 
-```sh
+```shell
 sudo apt install samba
 ```
 
-创建共享目录（略，此处以挂载的硬盘 `/mnt` 为例）
+创建共享目录并设置读写权限（略，此处以挂载的硬盘 `/mnt` 为例）
+
+```shell
+sudo chmod 777 /mnt
+```
 
 添加 samba 用户
 
-```bash
+```shell
 sudo smbpasswd -a user
 ```
 
