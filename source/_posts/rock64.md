@@ -32,7 +32,7 @@ deb https://mirrors.tuna.tsinghua.edu.cn/armbian buster main buster-utils buster
 在 /etc/fstab 文件末尾添加
 
 ```shell
-/dev/sda1 /mnt ext4 defaults 0 0
+/dev/sda1 /mnt/sda ext4 defaults 0 0
 ```
 
 ### 2.2 Samba
@@ -43,16 +43,16 @@ deb https://mirrors.tuna.tsinghua.edu.cn/armbian buster main buster-utils buster
 sudo apt install samba
 ```
 
-创建共享目录并设置读写权限（略，此处以挂载的硬盘 `/mnt` 为例）
+创建共享目录并设置读写权限（略，此处以挂载的硬盘 `/mnt/sda` 为例）
 
 ```shell
-sudo chmod 777 /mnt
+sudo chmod 777 /mnt/sda
 ```
 
 添加 samba 用户
 
 ```shell
-sudo smbpasswd -a user
+sudo smbpasswd -a $USER$
 ```
 
 配置 /etc/samba/smb.conf，在文件末尾添加
@@ -60,11 +60,11 @@ sudo smbpasswd -a user
 ```conf
 [share]
     comment = share
-    path = /mnt
+    path = /mnt/sda
     available = yes
     browsable = yes
     writeable = yes
-    valid users = user
+    valid users = $USER$
 ```
 
 重启服务
