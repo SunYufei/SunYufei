@@ -4,7 +4,7 @@ categories: Rock64
 date: 2021-10-05
 ---
 
-> 手中有个 Rock64 开发板，记录一下配置过程
+手中有个Rock64开发板，刷入了Armbian，记录一下配置过程
 
 <!--more-->
 
@@ -29,38 +29,38 @@ deb https://mirrors.tuna.tsinghua.edu.cn/armbian buster main buster-utils buster
 
 ### 2.1 开机挂载硬盘
 
-在 /etc/fstab 文件末尾添加
+在`/etc/fstab`文件末尾添加
 
-```shell
-/dev/sda1 /mnt/sda ext4 defaults 0 0
+```bash
+/dev/sda1 /mnt ext4 defaults 0 0
 ```
 
 ### 2.2 Samba
 
-安装 samba
+安装samba
 
-```shell
+```bash
 sudo apt install samba
 ```
 
-创建共享目录并设置读写权限（略，此处以挂载的硬盘 `/mnt/sda` 为例）
+创建共享目录并设置读写权限（略，此处以挂载的硬盘`/mnt`为例）
 
-```shell
-sudo chmod 777 /mnt/sda
+```bash
+sudo chmod 777 /mnt
 ```
 
-添加 samba 用户
+添加samba用户
 
-```shell
+```bash
 sudo smbpasswd -a $USER$
 ```
 
-配置 /etc/samba/smb.conf，在文件末尾添加
+配置`/etc/samba/smb.conf`，在文件末尾添加
 
 ```conf
 [share]
     comment = share
-    path = /mnt/sda
+    path = /mnt
     available = yes
     browsable = yes
     writeable = yes
@@ -69,7 +69,7 @@ sudo smbpasswd -a $USER$
 
 重启服务
 
-```shell
+```bash
 sudo service smbd restart
 ```
 
@@ -77,21 +77,21 @@ sudo service smbd restart
 
 安装依赖环境
 
-```shell
+```bash
 sudo apt install default-jdk
 ```
 
 下载 jar 包
 
-```shell
+```bash
 wget https://github.com/zxbu/webdav-aliyundriver/releases/download/v2.4.1/webdav-2.4.1.jar
 ```
 
 编写启动脚本 run.sh，注意替换 refresh_token，端口号可自定义
 
-```shell
+```bash
 _start() {
-    nohup java -jar /opt/aliyun-webdav/webdav-2.4.1.jar --aliyundrive.refresh-token="refresh_token" --server.port=9080 --aliyundrive.auth.enable=false > /dev/null 2>error.log &
+    nohup java -jar /opt/aliyun-webdav/webdav-2.4.1.jar --aliyundrive.refresh-token="refresh_token" --server.port=1080 --aliyundrive.auth.enable=false > /dev/null 2>error.log &
 }
 
 _stop() {
@@ -128,7 +128,7 @@ exit 0
 
 启动阿里云盘
 
-```shell
+```bash
 sudo ./run.sh start
 ```
 
@@ -138,7 +138,7 @@ sudo ./run.sh start
 
 #### 3.1.1 安装 Aria2
 
-```shell
+```bash
 sudo apt install aria2
 ```
 
@@ -148,7 +148,7 @@ sudo apt install aria2
 
 ```conf
 # download
-dir=/mnt/downloads
+dir=/mnt/downloads/aria2
 continue=true
 max-connection-per-server=16
 min-split-size=4M
@@ -199,7 +199,7 @@ rpc-listen-all=true
 
 启动并运行服务
 
-```shell
+```bash
 sudo systemctl enable aria2.service
 sudo service aria2 start
 ```
@@ -208,7 +208,7 @@ sudo service aria2 start
 
 将如下内容填入 /opt/aria2/aria2-tracker.sh
 
-```shell
+```bash
 #!/bin/bash
 service aria2 stop
 
@@ -232,7 +232,7 @@ service aria2 start
 
 下载 AriaNG 并解压，以 `/opt/aria2/AriaNG` 文件夹为例
 
-```shell
+```bash
 wget https://github.com/mayswind/AriaNg/releases/download/1.2.2/AriaNg-1.2.2.zip
 mkdir /opt/aria2/AriaNG
 mv AriaNg-*.zip /opt/aria2/AriaNG
@@ -242,7 +242,7 @@ unzip AriaNg-*.zip
 
 安装 Nginx
 
-```shell
+```bash
 sudo apt install nginx
 ```
 
@@ -250,8 +250,8 @@ sudo apt install nginx
 
 ```conf
 server {
-    listen      1080      default_server;
-    listen      [::]:1080 default_server;
+    listen      2080      default_server;
+    listen      [::]:2080 default_server;
     server_name AriaNG;
     charset     utf-8;
     location / {
@@ -262,28 +262,31 @@ server {
 
 创建配置文件的软链接
 
-```shell
+```bash
 sudo ln -s /etc/nginx/sites-available/aria2.conf /etc/nginx/sites-enabled/aria2.conf
 ```
 
-重启 Nginx
+重启Nginx
 
-```shell
+```bash
 sudo service nginx restart
 ```
 
+
 ### 3.2 qbittorrent-nox enhanced edition
+
+> 已停用
 
 #### 3.2.1 安装 qbittorrent-enhanced-nox
 
-```shell
+```bash
 wget https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases/download/release-4.3.8.10/qbittorrent-nox_aarch64-linux-musl_static.zip
 unzip qbittorrent-nox*.zip
 ```
 
 #### 3.2.2 添加服务
 
-修改 `/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
+修改`/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
 
 ```conf
 [Unit]
@@ -300,10 +303,104 @@ unzip qbittorrent-nox*.zip
 
 启动服务并设置开机启动
 
-```sh
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable qbittorrent-nox
 sudo systemctl start qbittorrent-nox
 ```
 
 默认登录网址：`ip:8080`，用户名：`admin`，密码：`adminadmin`
+
+### 3.3 simple-torrent
+
+#### 3.3.1 下载二进制文件
+
+```bash
+wget https://github.com/boypt/simple-torrent/releases/download/1.3.8/cloud-torrent_linux_arm64_static.gz
+sudo gzip -d cloud-torrent_linux_arm64_static.gz -c /opt/simple-torrent/cloud-torrent
+sudo chmod +x /opt/simple-torrent/cloud-torrent
+```
+
+#### 3.3.2 配置文件
+
+编辑 /opt/simple-torrent/conf.yaml
+
+```yaml
+allowruntimeconfigure: true
+alwaysaddtrackers: true
+autostart: false
+disableutp: false
+donecmd: ""
+downloaddirectory: /mnt/downloads/simple-torrent
+downloadrate: Unlimited
+enableseeding: true
+enableupload: true
+incomingport: 50007
+maxconcurrenttask: 6
+nodefaultportforwarding: true
+obfspreferred: true
+obfsrequirepreferred: false
+proxyurl: ""
+seedratio: 0
+seedtime: "0"
+trackerlist: remote:https://trackerslist.com/all.txt
+uploadrate: 32k
+watchdirectory: /mnt/torrents
+```
+
+#### 3.3.3 添加服务
+
+编辑 /etc/systemd/system/cloud-torrent.service
+
+```conf
+[Unit]
+    Description=Cloud Torrent
+    After=network.target
+
+[Service]
+    Type=simple
+    User=root
+    ExecStart=/opt/simple-torrent/cloud-torrent --listen :3080 -c /opt/simple-torrent/config.yaml --disable-log-time
+    Restart=always
+    RestartPreventExitStatus=42
+    RestartSec=3
+
+[Install]
+    WantedBy=multi-user.service
+```
+
+#### 3.3.4 自动更新脚本
+
+```bash
+#!/bin/bash
+
+# stop service
+SERVICE=cloud-torrent
+service $SERVICE stop
+echo "[+] stop service"
+
+# download new
+CLDBIN=/opt/simple-torrent/cloud-torrent
+rm $CLDBIN
+echo "[+] remove old $CLDBIN"
+
+GHAPI=https://api.github.com/repos/boypt/simple-torrent/releases/latest
+BINTAG=linux_arm64
+BINURL=$(wget -qO- $GHAPI | grep browser_download_url | grep "$BINTAG" | grep static | cut -d '"' -f 4)
+
+echo ${BINURL/github.com/hub.fastgit.org} | wget --no-verbose -i- -O- | gzip -d -c > ${CLDBIN}
+
+chmod +x ${CLDBIN}
+echo "[+] download new $CLDBIN"
+
+# open service
+service $SERVICE start
+echo "[+] start service"
+```
+
+### 3.4 live-torrent
+
+```bash
+sudo apt install docker.io
+docker run --restart=always --name live-torrent -d -p 3000:8080 davenchy/live-torrent
+```
