@@ -111,6 +111,8 @@ DIR=/opt/aliyun-drive
 BIN="$DIR/webdav.jar"
 TOKEN=
 PORT=1080
+MOUNT=/mnt/aliyun
+USER=
 
 _download() {
 	apt install default-jdk -y
@@ -119,6 +121,17 @@ _download() {
 	mkdir -p $DIR
 	wget ${BINURL/github.com/hub.fastgit.org} --no-verbose -O $BIN
 	chmod +x $BIN
+}
+
+_mount() {
+    apt install rclone -y
+
+    rclone config create aliyun webdav url http://localhost:$PORT vendor other
+    
+    mkdir -p $MOUNT
+    chown -R $USER:root $MOUNT
+    
+    nohup rclone mount aliyun:/ $MOUNT --cache-dir /tmp --allow-other --vfs-cache-mode writes --allow-non-empty >/dev/null 2>&1 &
 }
 
 _start() {
@@ -139,6 +152,9 @@ case "$1" in
 	download)
 		_download
 		;;
+    mount)
+        _mount
+        ;;
 	start)
 		_start
 		;;
@@ -149,7 +165,7 @@ case "$1" in
 		_restart
 		;;
 	*)
-		echo "Usage: {download|start|stop|restart}" >&2
+		echo "Usage: {download|mount|start|stop|restart}" >&2
 		exit 3
 		;;
 esac
@@ -157,11 +173,12 @@ esac
 exit 0
 ```
 
-下载、启动阿里云盘
+下载、启动阿里云盘并挂载
 
 ```shell
 sudo ./run.sh download
 sudo ./run.sh start
+sudo ./run.sh mount
 ```
 
 # 3 下载工具
