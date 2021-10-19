@@ -8,50 +8,77 @@ date: 2021-10-05
 
 <!--more-->
 
-## 1 镜像源
+# 1 基础配置
+
+## 1.1 镜像源
 
 /etc/apt/sources.list
 
 ```conf
-deb https://mirrors.tuna.tsinghua.edu.cn/debian buster main contrib non-free
-deb https://mirrors.tuna.tsinghua.edu.cn/debian buster-updates main contrib non-free
-deb https://mirrors.tuna.tsinghua.edu.cn/debian buster-backports main contrib non-free
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free
+deb https://mirrors.bfsu.edu.cn/debian testing main contrib non-free
+deb https://mirrors.bfsu.edu.cn/debian testing-updates main contrib non-free
+deb https://mirrors.bfsu.edu.cn/debian testing-backports main contrib non-free
+deb https://mirrors.bfsu.edu.cn/debian-security testing-security main contrib non-free
 ```
 
 /etc/apt/sources.list.d/armbian.list
 
 ```conf
-deb https://mirrors.tuna.tsinghua.edu.cn/armbian buster main buster-utils buster-desktop
+deb https://mirrors.bfsu.edu.cn/armbian bullseye main bullseye-utils
 ```
 
-## 2 磁盘挂载与共享
+## 1.2 zsh
 
-### 2.1 开机挂载硬盘
+安装
+
+```shell
+sudo apt install zsh zsh-autosuggestions zsh-syntax-highlighting zsh-theme-powerlevel9k
+```
+
+启用zsh
+
+```shell
+chsh -s /usr/bin/zsh
+```
+
+编辑`~/.zshrc`
+
+```bashrc
+source /usr/share/powerlevel9k/powerlevel9k.zsh-theme
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+export PATH=/sbin:/usr/sbin:$PATH
+```
+
+# 2 磁盘挂载与共享
+
+## 2.1 开机挂载硬盘
 
 在`/etc/fstab`文件末尾添加
 
-```bash
-/dev/sda1 /mnt ext4 defaults 0 0
+```shell
+/dev/sda1 /mnt/sda ext4 defaults 0 0
 ```
 
-### 2.2 Samba
+## 2.2 Samba
 
 安装samba
 
-```bash
+```shell
 sudo apt install samba
 ```
 
-创建共享目录并设置读写权限（略，此处以挂载的硬盘`/mnt`为例）
+创建共享目录并设置读写权限（略，此处以挂载的硬盘`/mnt/sda`为例）
 
-```bash
-sudo chmod 777 /mnt
+```shell
+sudo chown -R $USER:root /mnt/sda
+sudo chmod -R 755 /mnt/sda
 ```
 
 添加samba用户
 
-```bash
+```shell
 sudo smbpasswd -a $USER$
 ```
 
@@ -60,7 +87,7 @@ sudo smbpasswd -a $USER$
 ```conf
 [share]
     comment = share
-    path = /mnt
+    path = /mnt/sda
     available = yes
     browsable = yes
     writeable = yes
@@ -69,100 +96,124 @@ sudo smbpasswd -a $USER$
 
 重启服务
 
-```bash
+```shell
 sudo service smbd restart
 ```
 
-### 2.3 阿里云盘 WebDAV
+## 2.3 阿里云盘 WebDAV
 
-安装依赖环境
-
-```bash
-sudo apt install default-jdk
-```
-
-下载 jar 包
+编写启动脚本 run.sh，注意替换TOKEN，端口号可自定义
 
 ```bash
-wget https://github.com/zxbu/webdav-aliyundriver/releases/download/v2.4.1/webdav-2.4.1.jar
-```
+#!/bin/bash
 
-编写启动脚本 run.sh，注意替换 refresh_token，端口号可自定义
+FOLDER=/opt/aliyun-drive
+BIN=/opt/aliyun-drive/webdav.jar
+TOKEN=
+PORT=1080
+MOUNT=/mnt/aliyun
+USER=
 
-```bash
+_download() {
+	apt install default-jdk -y
+	GHAPI=https://api.github.com/repos/zxbu/webdav-aliyundriver/releases/latest
+	BINURL=$(wget -qO- $GHAPI | grep browser_download_url | cut -d '"' -f 4)
+	mkdir -p $FOLDER
+	wget ${BINURL/github.com/hub.fastgit.org} --no-verbose -O $BIN
+	chmod +x $BIN
+}
+
+_mount() {
+	apt install davfs2 -y
+    mkdir -p $MOUNT
+    mount -t davfs http://localhost:$PORT $MOUNT
+    chown -R $USER:root $MOUNT
+}
+
 _start() {
-    nohup java -jar /opt/aliyun-webdav/webdav-2.4.1.jar --aliyundrive.refresh-token="refresh_token" --server.port=1080 --aliyundrive.auth.enable=false > /dev/null 2>error.log &
+	nohup java -jar $BIN --aliyundrive.refresh-token=$TOKEN --server.port=$PORT --aliyundrive.auth.enable=false >/dev/null 2>&1 &
 }
 
 _stop() {
-    pkill -f /opt/aliyun-webdav/webdav-2.4.1.jar
+	pkill -f $BIN
 }
 
 _restart() {
-    _stop
-    sleep 1
-    _start
+	_stop
+	sleep 1
+	_start
 }
 
+
 case "$1" in
-    start)
-        _start
+	download)
+		_download
+		;;
+    mount)
+        _mount
         ;;
-    stop)
-        _stop
-        ;;
-    status)
-        exit $?
-        ;;
-    restart)
-        _restart
-        ;;
-    *)
-        echo "Usage: {start|stop|restart}" >&2
-        exit 3
-        ;;
+	start)
+		_start
+		;;
+	stop)
+		_stop
+		;;
+	restart)
+		_restart
+		;;
+	*)
+		echo "Usage: {download|mount|start|stop|restart}" >&2
+		exit 3
+		;;
 esac
 
 exit 0
 ```
 
-启动阿里云盘
+下载、启动阿里云盘并挂载
 
-```bash
+```shell
+sudo ./run.sh download
 sudo ./run.sh start
+sudo ./run.sh mount
 ```
 
-## 3 下载工具
+赋予访问权限
 
-### 3.1 Aria2
+```shell
+sudo chown -R $USER:root /mnt/aliyun
+```
 
-#### 3.1.1 安装 Aria2
+# 3 下载工具
 
-```bash
+## 3.1 Aria2
+
+### 3.1.1 安装 Aria2
+
+```shell
 sudo apt install aria2
 ```
 
-#### 3.1.2 配置文件
+### 3.1.2 配置文件
 
 修改文件 /opt/aria2/aria2.conf
 
 ```conf
 # download
-dir=/mnt/downloads/aria2
+dir=/mnt/sda/downloads
 continue=true
 max-connection-per-server=16
-min-split-size=4M
+min-split-size=2M
 split=16
 
 # bt
 bt-detach-seed-only=true
-bt-max-peers=64
+bt-max-peers=128
 bt-tracker=
 dht-file-path=/opt/aria2/dht/dht.dat
 dht-file-path6=/opt/aria2/dht/dht6.dat
 enable-dht=true
 enable-dht6=true
-file-allocation=trunc
 max-overall-upload-limit=64K
 peer-id-prefix=-TR3000-
 peer-agent=Transmission/3.00
@@ -179,7 +230,14 @@ rpc-listen-all=true
 
 ```
 
-#### 3.1.3 设置开机启动
+新建配置文件及其存放目录
+
+```shell
+mkdir -p /opt/aria2/dht
+touch /opt/aria2/aria2.session
+```
+
+### 3.1.3 设置开机启动
 
 将如下内容填入 /etc/systemd/system/aria2.service
 
@@ -199,16 +257,16 @@ rpc-listen-all=true
 
 启动并运行服务
 
-```bash
+```shell
 sudo systemctl enable aria2.service
 sudo service aria2 start
 ```
 
-#### 3.1.4 配置自动更新 trackers
+### 3.1.4 配置自动更新 trackers
 
 将如下内容填入 /opt/aria2/aria2-tracker.sh
 
-```bash
+```shell
 #!/bin/bash
 service aria2 stop
 
@@ -228,11 +286,11 @@ service aria2 start
 新增一项定时任务，将 `0 3 * * * root sh /opt/aria2/aria2-tracker.sh
 ` 添加至 /etc/crontab 末尾
 
-#### 3.1.5 配置 AriaNG + Nginx
+### 3.1.5 配置 AriaNG + Nginx
 
 下载 AriaNG 并解压，以 `/opt/aria2/AriaNG` 文件夹为例
 
-```bash
+```shell
 wget https://github.com/mayswind/AriaNg/releases/download/1.2.2/AriaNg-1.2.2.zip
 mkdir /opt/aria2/AriaNG
 mv AriaNg-*.zip /opt/aria2/AriaNG
@@ -242,7 +300,7 @@ unzip AriaNg-*.zip
 
 安装 Nginx
 
-```bash
+```shell
 sudo apt install nginx
 ```
 
@@ -262,29 +320,29 @@ server {
 
 创建配置文件的软链接
 
-```bash
+```shell
 sudo ln -s /etc/nginx/sites-available/aria2.conf /etc/nginx/sites-enabled/aria2.conf
 ```
 
 重启Nginx
 
-```bash
+```shell
 sudo service nginx restart
 ```
 
+## 3.2 Transmission
 
-### 3.2 qbittorrent-nox enhanced edition
+## 3.3 qbittorrent-nox enhanced edition
 
-> 已停用
+> WebUI不适配移动端，已停用
 
-#### 3.2.1 安装 qbittorrent-enhanced-nox
+### 3.3.1 安装 qbittorrent-enhanced-nox
 
-```bash
+```shell
 wget https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases/download/release-4.3.8.10/qbittorrent-nox_aarch64-linux-musl_static.zip
 unzip qbittorrent-nox*.zip
 ```
-
-#### 3.2.2 添加服务
+### 3.3.2 添加服务
 
 修改`/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
 
@@ -303,7 +361,7 @@ unzip qbittorrent-nox*.zip
 
 启动服务并设置开机启动
 
-```bash
+```shell
 sudo systemctl daemon-reload
 sudo systemctl enable qbittorrent-nox
 sudo systemctl start qbittorrent-nox
@@ -311,17 +369,19 @@ sudo systemctl start qbittorrent-nox
 
 默认登录网址：`ip:8080`，用户名：`admin`，密码：`adminadmin`
 
-### 3.3 simple-torrent
+## 3.4 simple-torrent
 
-#### 3.3.1 下载二进制文件
+> 下载占用高，已停用
 
-```bash
+### 3.4.1 下载二进制文件
+
+```shell
 wget https://github.com/boypt/simple-torrent/releases/download/1.3.8/cloud-torrent_linux_arm64_static.gz
 sudo gzip -d cloud-torrent_linux_arm64_static.gz -c /opt/simple-torrent/cloud-torrent
 sudo chmod +x /opt/simple-torrent/cloud-torrent
 ```
 
-#### 3.3.2 配置文件
+### 3.4.2 配置文件
 
 编辑 /opt/simple-torrent/conf.yaml
 
@@ -348,7 +408,7 @@ uploadrate: 32k
 watchdirectory: /mnt/torrents
 ```
 
-#### 3.3.3 添加服务
+### 3.4.3 添加服务
 
 编辑 /etc/systemd/system/cloud-torrent.service
 
@@ -369,7 +429,7 @@ watchdirectory: /mnt/torrents
     WantedBy=multi-user.service
 ```
 
-#### 3.3.4 自动更新脚本
+### 3.4.4 自动更新脚本
 
 ```bash
 #!/bin/bash
@@ -398,9 +458,79 @@ service $SERVICE start
 echo "[+] start service"
 ```
 
-### 3.4 live-torrent
+# 4 开发环境
 
-```bash
-sudo apt install docker.io
-docker run --restart=always --name live-torrent -d -p 3000:8080 davenchy/live-torrent
+## 4.1 Podman
+
+### 4.1.1 安装
+
+```shell
+sudo apt install podman uidmap slirp4netns
+```
+
+### 4.1.2 添加镜像源
+
+修改`/etc/containers/registries.conf`，添加如下内容：
+
+```conf
+unqualified-search-registries = ["docker.io"]
+[[registry]]
+prefix = "docker.io"
+location = "zs2joo3y.mirror.aliyuncs.com"
+```
+
+### 4.1.3 Rootless配置
+
+修改`/usr/share/containers/containers.conf`，启用如下内容
+
+```conf
+cgroup_manager = "cgroupfs"
+runtime = "crun"
+```
+
+运行
+
+```shell
+sudo loginctl enable-linger 1000
+```
+
+### 4.1.4 修改镜像存储路径
+
+```shell
+sudo mkdir -p /mnt/sda/containers
+sudo ln -s /mnt/sda/containers/ /home/$USER/.local/share/containers
+```
+
+### 4.1.4 重启Podman服务
+
+```shell
+service podman restart
+```
+
+## 4.2 Redis
+
+```shell
+podman pull redis:6-alpine
+podman run -itd --name redis -p 6379:6379 redis
+```
+
+## 4.3 MySQL
+
+```shell
+podman pull mysql/mysql-server
+
+mkdir -p /mnt/sda/data/mysql
+podman run -itd --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -v /mnt/sda/data/mysql:/var/lib/mysql mysql-server
+```
+
+配置 MySQL
+
+```shell
+podman exec -it mysql bash
+
+mysql -u root -p
+use mysql;
+update user set host='%' where user='root';
+grant all on *.* to 'root'@'%';
+flush privileges;
 ```
