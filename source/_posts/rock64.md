@@ -107,27 +107,18 @@ sudo service smbd restart
 ```bash
 #!/bin/bash
 
-FOLDER=/opt/aliyun-drive
-BIN=/opt/aliyun-drive/webdav.jar
+DIR=/opt/aliyun-drive
+BIN="$DIR/webdav.jar"
 TOKEN=
 PORT=1080
-MOUNT=/mnt/aliyun
-USER=
 
 _download() {
 	apt install default-jdk -y
 	GHAPI=https://api.github.com/repos/zxbu/webdav-aliyundriver/releases/latest
 	BINURL=$(wget -qO- $GHAPI | grep browser_download_url | cut -d '"' -f 4)
-	mkdir -p $FOLDER
+	mkdir -p $DIR
 	wget ${BINURL/github.com/hub.fastgit.org} --no-verbose -O $BIN
 	chmod +x $BIN
-}
-
-_mount() {
-	apt install davfs2 -y
-    mkdir -p $MOUNT
-    mount -t davfs http://localhost:$PORT $MOUNT
-    chown -R $USER:root $MOUNT
 }
 
 _start() {
@@ -144,14 +135,10 @@ _restart() {
 	_start
 }
 
-
 case "$1" in
 	download)
 		_download
 		;;
-    mount)
-        _mount
-        ;;
 	start)
 		_start
 		;;
@@ -162,7 +149,7 @@ case "$1" in
 		_restart
 		;;
 	*)
-		echo "Usage: {download|mount|start|stop|restart}" >&2
+		echo "Usage: {download|start|stop|restart}" >&2
 		exit 3
 		;;
 esac
@@ -170,18 +157,11 @@ esac
 exit 0
 ```
 
-下载、启动阿里云盘并挂载
+下载、启动阿里云盘
 
 ```shell
 sudo ./run.sh download
 sudo ./run.sh start
-sudo ./run.sh mount
-```
-
-赋予访问权限
-
-```shell
-sudo chown -R $USER:root /mnt/aliyun
 ```
 
 # 3 下载工具
