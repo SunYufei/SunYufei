@@ -29,7 +29,7 @@ deb https://mirrors.bfsu.edu.cn/armbian bullseye main bullseye-utils
 
 ## 1.2 zsh
 
-安装
+安装zsh及插件
 
 ```shell
 sudo apt install zsh zsh-autosuggestions zsh-syntax-highlighting zsh-theme-powerlevel9k
@@ -43,12 +43,36 @@ chsh -s /usr/bin/zsh
 
 编辑`~/.zshrc`
 
-```bashrc
+```shell
+export TERM="xterm-256color"
+export PATH=/sbin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:$PATH
+
 source /usr/share/powerlevel9k/powerlevel9k.zsh-theme
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-export PATH=/sbin:/usr/sbin:$PATH
+# key bindings
+bindkey "\e[1~" beginning-of-line
+bindkey "\e[4~" end-of-line
+bindkey "\e[5~" beginning-of-history
+bindkey "\e[6~" end-of-history
+# for rxvt
+bindkey "\e[8~" end-of-line
+bindkey "\e[7~" beginning-of-line
+# for non RH/Debian xterm, can't hurt for RH/DEbian xterm
+bindkey "\eOH" beginning-of-line
+bindkey "\eOF" end-of-line
+# for freebsd console
+bindkey "\e[H" beginning-of-line
+bindkey "\e[F" end-of-line
+# completion in the middle of a line
+bindkey '^i' expand-or-complete-prefix
+```
+
+为root用户建立zshrc连接
+
+```shell
+sudo ln -s /home/$USER/.zshrc /root/.zshrc
 ```
 
 # 2 磁盘挂载与共享
@@ -100,7 +124,21 @@ sudo smbpasswd -a $USER$
 sudo service smbd restart
 ```
 
-## 2.3 阿里云盘 WebDAV
+## 2.3 rclone
+
+安装rclone
+
+```shell
+sudo apt install rclone
+```
+
+建立root用户的rclone.conf连接
+
+```shell
+sudo ln -s /home/$USER/.config/rclone/rclone.conf /root/.config/rclone/rclone.conf
+```
+
+## 2.4 阿里云盘 WebDAV
 
 编写启动脚本 run.sh，注意替换TOKEN，端口号可自定义
 
@@ -114,24 +152,42 @@ PORT=1080
 MOUNT=/mnt/aliyun
 USER=
 
+_install() {
+	# jdk
+	if [ ! -e "/usr/bin/java" ]; then
+		apt install default-jdk -y
+	fi
+	# rclone
+	if [ ! -e "/usr/bin/rclone" ]; then
+		apt install rclone -y
+	fi
+}
+
 _download() {
-	apt install default-jdk -y
+	_install
 	GHAPI=https://api.github.com/repos/zxbu/webdav-aliyundriver/releases/latest
-	BINURL=$(wget -qO- $GHAPI | grep browser_download_url | cut -d '"' -f 4)
-	mkdir -p $DIR
-	wget ${BINURL/github.com/hub.fastgit.org} --no-verbose -O $BIN
-	chmod +x $BIN
+    BINURL=$(wget -qO- $GHAPI | grep browser_download_url | cut -d '"' -f 4)
+    mkdir -p $DIR
+    wget ${BINURL/github.com/hub.fastgit.org} --no-verbose -O $BIN
+    chmod +x $BIN
+}
+
+_config() {
+	rclone config create aliyun webdav url http://localhost:$PORT vendor other
 }
 
 _mount() {
-    apt install rclone -y
+	_install
+	_config
 
-    rclone config create aliyun webdav url http://localhost:$PORT vendor other
-    
-    mkdir -p $MOUNT
-    chown -R $USER:root $MOUNT
-    
-    nohup rclone mount aliyun:/ $MOUNT --cache-dir /tmp --allow-other --vfs-cache-mode writes --allow-non-empty >/dev/null 2>&1 &
+	mkdir -p $MOUNT
+	chown -R $USER:root $MOUNT
+
+	nohup rclone mount aliyun:/ $MOUNT --cache-dir /tmp --allow-other --vfs-cache-mode writes --allow-non-empty >/dev/null 2>&1 &
+}
+
+_umount() {
+	fusermount -u $MOUNT
 }
 
 _start() {
@@ -148,13 +204,20 @@ _restart() {
 	_start
 }
 
+
 case "$1" in
 	download)
 		_download
 		;;
-    mount)
-        _mount
-        ;;
+	config)
+		_config
+		;;
+	mount)
+		_mount
+		;;
+	umount)
+		_umount
+		;;
 	start)
 		_start
 		;;
@@ -165,7 +228,7 @@ case "$1" in
 		_restart
 		;;
 	*)
-		echo "Usage: {download|mount|start|stop|restart}" >&2
+		echo "Usage: {download|config|mount|umount|start|stop|restart}" >&2
 		exit 3
 		;;
 esac
@@ -328,6 +391,8 @@ sudo service nginx restart
 ```
 
 ## 3.2 Transmission
+
+> 暂不启用
 
 ## 3.3 qbittorrent-nox enhanced edition
 
