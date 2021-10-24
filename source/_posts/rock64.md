@@ -244,6 +244,13 @@ sudo ./run.sh start
 sudo ./run.sh mount
 ```
 
+## 2.5 其他挂载
+
+```shell
+sudo mkdir -p /var/journal
+sudo ln -s /var/journal /var/log/journal
+```
+
 # 3 下载工具
 
 ## 3.1 Aria2
@@ -268,6 +275,7 @@ split=16
 
 # bt
 bt-detach-seed-only=true
+bt-force-encryption=true
 bt-max-peers=128
 bt-tracker=
 dht-file-path=/opt/aria2/dht/dht.dat
@@ -394,17 +402,28 @@ sudo service nginx restart
 
 > 暂不启用
 
-## 3.3 qbittorrent-nox enhanced edition
+## 3.2 qbittorrent nox enhanced edition
 
-> WebUI不适配移动端，已停用
+### 3.2.1 安装 qbittorrent-enhanced-nox
 
-### 3.3.1 安装 qbittorrent-enhanced-nox
+```bash
+#!/bin/bash
 
-```shell
-wget https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases/download/release-4.3.8.10/qbittorrent-nox_aarch64-linux-musl_static.zip
-unzip qbittorrent-nox*.zip
+BIN=/opt/qbittorrent-nox/qbittorrent-nox
+
+if [ -e $BIN ]; then
+	rm $BIN
+fi
+
+GHAPI=https://api.github.com/repos/c0re100/qBittorrent-Enhanced-Edition/releases/latest
+BINTAG=aarch64-linux
+BINURL=$(wget -qO- $GHAPI | grep browser_download_url | grep "$BINTAG" | grep static | cut -d '"' -f 4)
+
+echo ${BINURL/github.com/hub.fastgit.org} | wget --no-verbose -i- -O- | gzip -d -c > $BIN
+
+chmod +x $BIN
 ```
-### 3.3.2 添加服务
+### 3.2.2 添加服务
 
 修改`/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
 
@@ -416,7 +435,7 @@ unzip qbittorrent-nox*.zip
     User = root
     Type = forking
     RemainAfterExit = yes
-    ExecStart = /usr/bin/qbittorrent-nox -d
+    ExecStart = /opt/qbittorrent-nox/qbittorrent-nox -d
 [Install]
     WantedBy = multi-user.target
 ```
@@ -431,11 +450,11 @@ sudo systemctl start qbittorrent-nox
 
 默认登录网址：`ip:8080`，用户名：`admin`，密码：`adminadmin`
 
-## 3.4 simple-torrent
+## 3.3 simple-torrent
 
 > 下载占用高，已停用
 
-### 3.4.1 下载二进制文件
+### 3.3.1 下载二进制文件
 
 ```shell
 wget https://github.com/boypt/simple-torrent/releases/download/1.3.8/cloud-torrent_linux_arm64_static.gz
@@ -443,7 +462,7 @@ sudo gzip -d cloud-torrent_linux_arm64_static.gz -c /opt/simple-torrent/cloud-to
 sudo chmod +x /opt/simple-torrent/cloud-torrent
 ```
 
-### 3.4.2 配置文件
+### 3.3.2 配置文件
 
 编辑 /opt/simple-torrent/conf.yaml
 
@@ -470,7 +489,7 @@ uploadrate: 32k
 watchdirectory: /mnt/torrents
 ```
 
-### 3.4.3 添加服务
+### 3.3.3 添加服务
 
 编辑 /etc/systemd/system/cloud-torrent.service
 
@@ -491,7 +510,7 @@ watchdirectory: /mnt/torrents
     WantedBy=multi-user.service
 ```
 
-### 3.4.4 自动更新脚本
+### 3.3.4 自动更新脚本
 
 ```bash
 #!/bin/bash
