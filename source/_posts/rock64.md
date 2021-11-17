@@ -615,3 +615,10 @@ update user set host='%' where user='root';
 grant all on *.* to 'root'@'%';
 flush privileges;
 ```
+
+## 4.4 ElasticSearch
+
+```shell
+podman pull elasticsearch:7.14.2
+podman run -d --name es -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.14.2
+```
