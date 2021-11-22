@@ -8,9 +8,9 @@ date: 2021-10-05
 
 <!--more-->
 
-# 1 基础配置
+# 基础配置
 
-## 1.1 镜像源
+## 镜像源
 
 /etc/apt/sources.list
 
@@ -27,7 +27,7 @@ deb https://mirrors.bfsu.edu.cn/debian-security testing-security main contrib no
 deb https://mirrors.bfsu.edu.cn/armbian bullseye main bullseye-utils
 ```
 
-## 1.2 zsh
+## zsh
 
 安装zsh及插件
 
@@ -75,9 +75,9 @@ bindkey '^i' expand-or-complete-prefix
 sudo ln -s /home/$USER/.zshrc /root/.zshrc
 ```
 
-# 2 磁盘挂载与共享
+# 磁盘挂载与共享
 
-## 2.1 开机挂载硬盘
+## 开机挂载硬盘
 
 在`/etc/fstab`文件末尾添加
 
@@ -85,7 +85,7 @@ sudo ln -s /home/$USER/.zshrc /root/.zshrc
 /dev/sda1 /mnt/sda ext4 defaults 0 0
 ```
 
-## 2.2 Samba
+## Samba
 
 安装samba
 
@@ -124,7 +124,7 @@ sudo smbpasswd -a $USER$
 sudo service smbd restart
 ```
 
-## 2.3 rclone
+## rclone
 
 安装rclone
 
@@ -138,7 +138,7 @@ sudo apt install rclone
 sudo ln -s /home/$USER/.config/rclone/rclone.conf /root/.config/rclone/rclone.conf
 ```
 
-## 2.4 阿里云盘 WebDAV
+## 阿里云盘 WebDAV
 
 编写启动脚本 run.sh，注意替换TOKEN，端口号可自定义
 
@@ -244,24 +244,24 @@ sudo ./run.sh start
 sudo ./run.sh mount
 ```
 
-## 2.5 其他挂载
+## 其他挂载
 
 ```shell
 sudo mkdir -p /var/journal
 sudo ln -s /var/journal /var/log/journal
 ```
 
-# 3 下载工具
+# 下载工具
 
-## 3.1 Aria2
+## Aria2
 
-### 3.1.1 安装 Aria2
+### 安装 Aria2
 
 ```shell
 sudo apt install aria2
 ```
 
-### 3.1.2 配置文件
+### 配置文件
 
 修改文件 /opt/aria2/aria2.conf
 
@@ -305,7 +305,7 @@ mkdir -p /opt/aria2/dht
 touch /opt/aria2/aria2.session
 ```
 
-### 3.1.3 设置开机启动
+### 设置开机启动
 
 将如下内容填入 /etc/systemd/system/aria2.service
 
@@ -330,7 +330,7 @@ sudo systemctl enable aria2.service
 sudo service aria2 start
 ```
 
-### 3.1.4 配置自动更新 trackers
+### 配置自动更新 trackers
 
 将如下内容填入 /opt/aria2/aria2-tracker.sh
 
@@ -354,7 +354,7 @@ service aria2 start
 新增一项定时任务，将 `0 3 * * * root sh /opt/aria2/aria2-tracker.sh
 ` 添加至 /etc/crontab 末尾
 
-### 3.1.5 配置 AriaNG + Nginx
+### 配置 AriaNG + Nginx
 
 下载 AriaNG 并解压，以 `/opt/aria2/AriaNG` 文件夹为例
 
@@ -398,13 +398,9 @@ sudo ln -s /etc/nginx/sites-available/aria2.conf /etc/nginx/sites-enabled/aria2.
 sudo service nginx restart
 ```
 
-## 3.2 Transmission
+## qbittorrent nox enhanced edition
 
-> 暂不启用
-
-## 3.2 qbittorrent nox enhanced edition
-
-### 3.2.1 安装 qbittorrent-enhanced-nox
+### 安装 qbittorrent-enhanced-nox
 
 ```bash
 #!/bin/bash
@@ -423,7 +419,7 @@ echo ${BINURL/github.com/hub.fastgit.org} | wget --no-verbose -i- -O- | gzip -d 
 
 chmod +x $BIN
 ```
-### 3.2.2 添加服务
+### 添加服务
 
 修改`/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
 
@@ -450,11 +446,11 @@ sudo systemctl start qbittorrent-nox
 
 默认登录网址：`ip:8080`，用户名：`admin`，密码：`adminadmin`
 
-## 3.3 simple-torrent
+## simple-torrent
 
 > 下载占用高，已停用
 
-### 3.3.1 下载二进制文件
+### 下载二进制文件
 
 ```shell
 wget https://github.com/boypt/simple-torrent/releases/download/1.3.8/cloud-torrent_linux_arm64_static.gz
@@ -462,7 +458,7 @@ sudo gzip -d cloud-torrent_linux_arm64_static.gz -c /opt/simple-torrent/cloud-to
 sudo chmod +x /opt/simple-torrent/cloud-torrent
 ```
 
-### 3.3.2 配置文件
+### 配置文件
 
 编辑 /opt/simple-torrent/conf.yaml
 
@@ -489,7 +485,7 @@ uploadrate: 32k
 watchdirectory: /mnt/torrents
 ```
 
-### 3.3.3 添加服务
+### 添加服务
 
 编辑 /etc/systemd/system/cloud-torrent.service
 
@@ -510,7 +506,7 @@ watchdirectory: /mnt/torrents
     WantedBy=multi-user.service
 ```
 
-### 3.3.4 自动更新脚本
+### 自动更新脚本
 
 ```bash
 #!/bin/bash
@@ -539,17 +535,17 @@ service $SERVICE start
 echo "[+] start service"
 ```
 
-# 4 开发环境
+# 开发环境
 
-## 4.1 Podman
+## Podman
 
-### 4.1.1 安装
+### 安装
 
 ```shell
 sudo apt install podman uidmap slirp4netns
 ```
 
-### 4.1.2 添加镜像源
+### 添加镜像源
 
 修改`/etc/containers/registries.conf`，添加如下内容：
 
@@ -560,7 +556,7 @@ prefix = "docker.io"
 location = "zs2joo3y.mirror.aliyuncs.com"
 ```
 
-### 4.1.3 Rootless配置
+### Rootless配置
 
 修改`/usr/share/containers/containers.conf`，启用如下内容
 
@@ -575,27 +571,27 @@ runtime = "crun"
 sudo loginctl enable-linger 1000
 ```
 
-### 4.1.4 修改镜像存储路径
+### 修改镜像存储路径
 
 ```shell
 sudo mkdir -p /mnt/sda/containers
 sudo ln -s /mnt/sda/containers/ /home/$USER/.local/share/containers
 ```
 
-### 4.1.4 重启Podman服务
+### 重启Podman服务
 
 ```shell
 service podman restart
 ```
 
-## 4.2 Redis
+## Redis
 
 ```shell
 podman pull redis:6-alpine
 podman run -itd --name redis -p 6379:6379 redis
 ```
 
-## 4.3 MySQL
+## MySQL
 
 ```shell
 podman pull mysql/mysql-server
@@ -616,7 +612,7 @@ grant all on *.* to 'root'@'%';
 flush privileges;
 ```
 
-## 4.4 ElasticSearch
+## ElasticSearch
 
 ```shell
 podman pull elasticsearch:7.14.2
