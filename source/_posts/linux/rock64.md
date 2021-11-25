@@ -1,6 +1,6 @@
 ---
 title: Armbian 配置记录
-categories: Rock64
+categories: Linux
 date: 2021-10-05
 ---
 
