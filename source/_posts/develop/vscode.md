@@ -1,7 +1,6 @@
 ---
 title: VSCode开发环境配置
 date: 2020-07-26
-categories: Programming
 ---
 
 VSCode + C + Java + Go，备战秋招
