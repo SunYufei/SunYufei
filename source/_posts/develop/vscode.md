@@ -23,19 +23,19 @@ VSCode + C + Java + Go，备战秋招
 
 ## Markdown
 
-本博客使用Markdown编写，Coding DevOps / GitHub Actions 自动部署。安装 `Markdown All in One` 插件增强 VSCode 的 Markdown 功能
+本博客使用 Markdown 编写，Coding DevOps / GitHub Actions 自动部署。安装 `Markdown All in One` 插件增强 VSCode 的 Markdown 功能
 
-或者使用Typora编写Markdown
+或者使用 Typora 编写 Markdown
 
 ## Git
 
-到[git-for-windows](https://github.com/git-for-windows/git/releases)项目中下载最新的git-for-windows，安装完毕后将安装目录的`cmd`文件夹加入环境变量
+到[git-for-windows](https://github.com/git-for-windows/git/releases)项目中下载最新的 git-for-windows，安装完毕后将安装目录的`cmd`文件夹加入环境变量
 
-（可选）VSCode中安装`GitLens`插件
+（可选）VSCode 中安装`GitLens`插件
 
 ## C/C++
 
-安装MinGW-w64并将`bin`目录添加到环境变量中
+安装 MinGW-w64 并将`bin`目录添加到环境变量中
 
 安装`C/C++`插件后进入设置，修改如下内容
 
@@ -52,15 +52,15 @@ VSCode + C + Java + Go，备战秋招
 
 ## Go
 
-下载安装Go，开启Go Module，配置GOPROXY
+下载安装 Go，开启 Go Module，配置 GOPROXY
 
-在VSCode中安装Go插件即可
+在 VSCode 中安装 Go 插件即可
 
 ## Java
 
-下载安装OpenJDK，安装完毕后配置`JAVA_HOME`和`Path`环境变量
+下载安装 OpenJDK，安装完毕后配置`JAVA_HOME`和`Path`环境变量
 
-如果只做算法题，安装插件`Language Support for Java(TM) by Red Hat` 即可。工程开发推荐IntelliJ IDEA
+如果只做算法题，安装插件`Language Support for Java(TM) by Red Hat` 即可。工程开发推荐 IntelliJ IDEA
 
 ## Python
 
@@ -144,7 +144,7 @@ conda install flake8 yapf isort
 
 ## 远程开发
 
-平时用服务器跑机器学习，使用VSCode远程开发需要安装`Remote Development`插件，安装完成后配置免密登录
+平时用服务器跑机器学习，使用 VSCode 远程开发需要安装`Remote Development`插件，安装完成后配置免密登录
 
 ### 生成密钥对
 
@@ -166,9 +166,9 @@ cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 
 # LeetCode
 
-VSCode LeetCode插件依赖Node.js 8+，需要预先安装好Node.js
+VSCode LeetCode 插件依赖 Node.js 8+，需要预先安装好 Node.js
 
-在VSCode中安装LeetCode插件，安装完毕后设置默认编程语言和题目保存路径，在`settings.json`中添加如下内容：
+在 VSCode 中安装 LeetCode 插件，安装完毕后设置默认编程语言和题目保存路径，在`settings.json`中添加如下内容：
 
 ```json
 // 默认语言
@@ -196,4 +196,4 @@ VSCode LeetCode插件依赖Node.js 8+，需要预先安装好Node.js
 }
 ```
 
-左侧点击LeetCode图标，登录LeetCode账号就可以开始做题了
+左侧点击 LeetCode 图标，登录 LeetCode 账号就可以开始做题了

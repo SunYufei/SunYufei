@@ -9,10 +9,10 @@ date: 2019-03-06
 
 ## 前言
 
-项目需要使用 OpenCV 和它的扩展模块 opencv_contrib，官网上只提供源码、不含扩展模块的Windows版本、iOS和Android pack，想使用OpenCV和它的扩展模块，有如下的几种方法：
+项目需要使用 OpenCV 和它的扩展模块 opencv_contrib，官网上只提供源码、不含扩展模块的 Windows 版本、iOS 和 Android pack，想使用 OpenCV 和它的扩展模块，有如下的几种方法：
 
-1. 使用OpenCV Python接口
-2. 使用Manjaro Linux / Arch Linux系统并安装OpenCV
+1. 使用 OpenCV Python 接口
+2. 使用 Manjaro Linux / Arch Linux 系统并安装 OpenCV
 3. 下载源码自行编译
 4. 其他方法
 
@@ -28,19 +28,19 @@ pip install opencv-python opencv-contrib-python
 
 **「一号坑已就位」**
 
-OpenCV基础模块用到现在没发现什么问题，直到我用到了扩展模块中的face模块，按照官方文档的要求写好程序，运行时发生了程序卡死的现象。搜了一下在GitHub上搜到一个issue：
+OpenCV 基础模块用到现在没发现什么问题，直到我用到了扩展模块中的 face 模块，按照官方文档的要求写好程序，运行时发生了程序卡死的现象。搜了一下在 GitHub 上搜到一个 issue：
 
 [opencv/opencv_contrib#1661 Using Facemark API (Python), Version 4.0.0 - pre : bad alloc error](https://github.com/opencv/opencv_contrib/issues/1661)
 
-里面主要说的是一个C++函数的BUG导致导出Python接口时出现错误。Issue的下面讲了很多，给人一种BUG已经修复的感觉。我去看了一下有BUG的那个文件，里面写了一句话：
+里面主要说的是一个 C++函数的 BUG 导致导出 Python 接口时出现错误。Issue 的下面讲了很多，给人一种 BUG 已经修复的感觉。我去看了一下有 BUG 的那个文件，里面写了一句话：
 
 ```cpp
 // FIX IT
 ```
 
-也就是说，开发人员临时修了一下BUG，但没有合并到OpenCV代码中。
+也就是说，开发人员临时修了一下 BUG，但没有合并到 OpenCV 代码中。
 
-**“官方BUG最为致命”**
+**“官方 BUG 最为致命”**
 
 此路不通，另寻他路。
 
@@ -48,9 +48,9 @@ OpenCV基础模块用到现在没发现什么问题，直到我用到了扩展�
 
 ## 0x02
 
-我想到了以前装RTTOV时使用的Manjaro Linux系统，去仓库里搜了一下，有OpenCV软件包，而且这个软件包包含了扩展模块，可以拿来做开发环境。
+我想到了以前装 RTTOV 时使用的 Manjaro Linux 系统，去仓库里搜了一下，有 OpenCV 软件包，而且这个软件包包含了扩展模块，可以拿来做开发环境。
 
-那么问题来了，有些东西必须在Windows系统中使用，怎样兼顾呢？
+那么问题来了，有些东西必须在 Windows 系统中使用，怎样兼顾呢？
 
 方法有几种：
 
@@ -58,7 +58,7 @@ OpenCV基础模块用到现在没发现什么问题，直到我用到了扩展�
 2. Windows + 虚拟机 + Manjaro
 3. 其他方法
 
-官方WSL不含Manjaro或者Arch Linux系统，想安装的话可以使用[Arch Wiki](https://wiki.archlinux.org/)推荐的[ArchWSL](https://github.com/yuk7/ArchWSL)项目，安装也很简单，跟着文档一步步来就行。
+官方 WSL 不含 Manjaro 或者 Arch Linux 系统，想安装的话可以使用[Arch Wiki](https://wiki.archlinux.org/)推荐的[ArchWSL](https://github.com/yuk7/ArchWSL)项目，安装也很简单，跟着文档一步步来就行。
 
 系统安装完毕后，开始安装软件包：
 
@@ -66,7 +66,7 @@ OpenCV基础模块用到现在没发现什么问题，直到我用到了扩展�
 pacman -S opencv
 ```
 
-此时可以使用SSH连接WSL进行开发了。
+此时可以使用 SSH 连接 WSL 进行开发了。
 
 ```bash
 # 安装OpenSSH
@@ -84,19 +84,19 @@ systemctl restart sshd.service
 
 屏幕上出现一行字：`System has not been booted with systemd as init system (PID 1). Can't operate.`
 
-搜了一下，在GitHub上找到一个issue：
+搜了一下，在 GitHub 上找到一个 issue：
 
 [Microsoft/WSL#1579 WSL does not support systemd / an init system, so you cannot use services. You have to run the commands yourself.](https://github.com/Microsoft/WSL/issues/1579)
 
 **官方：我不支持，嘿嘿嘿**
 
-从别的地方找到了启用sshd的方法，开启一个terminal，使用nohup启用sshd服务在后台运行：
+从别的地方找到了启用 sshd 的方法，开启一个 terminal，使用 nohup 启用 sshd 服务在后台运行：
 
 ```bash
 nohup /usr/bin/sshd -D >> ~/output.log 2>&1 &
 ```
 
-使用IDE链接WSL，配好编译环境，写好测试代码，一切很顺利的样子。
+使用 IDE 链接 WSL，配好编译环境，写好测试代码，一切很顺利的样子。
 
 **「三号坑已就位」**
 
@@ -110,25 +110,25 @@ WSL 貌似不能使用一些外设。
 
 **「四号坑已就位」**
 
-把虚拟机放后台再开个IDE，内存占用90%多。此法可行，但条件不允许啊。
+把虚拟机放后台再开个 IDE，内存占用 90%多。此法可行，但条件不允许啊。
 
 ## 0x04
 
-搜了一下使用MinGW编译的OpenCV，GitHub上有一个项目，[OpenCV-MinGW-Build](https://github.com/huihut/OpenCV-MinGW-Build)，但没有扩展模块。里面有编译方法，我参照它开始了我的编译之路。
+搜了一下使用 MinGW 编译的 OpenCV，GitHub 上有一个项目，[OpenCV-MinGW-Build](https://github.com/huihut/OpenCV-MinGW-Build)，但没有扩展模块。里面有编译方法，我参照它开始了我的编译之路。
 
-参照教程使用CMake生成Makefile，使用mingw32-make.exe进行编译
+参照教程使用 CMake 生成 Makefile，使用 mingw32-make.exe 进行编译
 
 ```bash
 mingw32-make.exe -j8
 ```
 
-启用8线程，看着那满载的CPU，感觉这次稳了。
+启用 8 线程，看着那满载的 CPU，感觉这次稳了。
 
 **「五号坑已就位」**
 
-在编译到`videoio`模块时报错，原因是MinGW自带的头文件aviriff.h注释错误，文件第一行的多行注释少一个“/”符号，修正错误后继续编译，后面报了一些Warning，没有出现Error。
+在编译到`videoio`模块时报错，原因是 MinGW 自带的头文件 aviriff.h 注释错误，文件第一行的多行注释少一个“/”符号，修正错误后继续编译，后面报了一些 Warning，没有出现 Error。
 
-完成后参照[在VSCode中使用OpenCV](https://stackoverflow.com/questions/51622111/opencv-c-mingw-vscode-fatal-error-to-compile/51801863#51801863)博客，编写好Makefile文档，进行测试。
+完成后参照[在 VSCode 中使用 OpenCV](https://stackoverflow.com/questions/51622111/opencv-c-mingw-vscode-fatal-error-to-compile/51801863#51801863)博客，编写好 Makefile 文档，进行测试。
 
 **「六号坑已就位」**
 
@@ -136,18 +136,18 @@ mingw32-make.exe -j8
 
 ## 0x05
 
-在博客[在VSCode中使用OpenCV](https://stackoverflow.com/questions/51622111/opencv-c-mingw-vscode-fatal-error-to-compile/51801863#51801863)的底部有两条评论，提供了两种在Windows系统中安装使用OpenCV的方法：
+在博客[在 VSCode 中使用 OpenCV](https://stackoverflow.com/questions/51622111/opencv-c-mingw-vscode-fatal-error-to-compile/51801863#51801863)的底部有两条评论，提供了两种在 Windows 系统中安装使用 OpenCV 的方法：
 
-1. 使用[MSYS2](https://msys2.org/)安装OpenCV；
-2. 使用vcpkg (MS packager to install windows based open source projects)安装OpenCV。
+1. 使用[MSYS2](https://msys2.org/)安装 OpenCV；
+2. 使用 vcpkg (MS packager to install windows based open source projects)安装 OpenCV。
 
-MSYS2可以看做Windows下的Arch Linux，与WSL不同，MSYS2里面的包都是编译成Windows平台的exe、dll等文件，而WSL中的包是编译成elf、so等文件。
+MSYS2 可以看做 Windows 下的 Arch Linux，与 WSL 不同，MSYS2 里面的包都是编译成 Windows 平台的 exe、dll 等文件，而 WSL 中的包是编译成 elf、so 等文件。
 
-## 0x06 MSYS2 + OpenCV环境配置
+## 0x06 MSYS2 + OpenCV 环境配置
 
 ### Step 1 下载安装
 
-到官网下载MSYS2安装包，安装完成后配置包镜像。并将目录
+到官网下载 MSYS2 安装包，安装完成后配置包镜像。并将目录
 
 ```
 /path/to/MSYS2/mingw64/bin
@@ -164,9 +164,9 @@ pacman -S mingw-w64-x86_64-toolchain
 pacman -S mingw-w64-x86_64-opencv
 ```
 
-### Step 3 配置VSCode开发环境
+### Step 3 配置 VSCode 开发环境
 
-打开VSCode的设置文件，添加下列内容：
+打开 VSCode 的设置文件，添加下列内容：
 
 ```yaml
 "C_Cpp.default.compilerPath": "/path/to/MSYS2/mingw64/bin/gcc.exe",
@@ -174,12 +174,12 @@ pacman -S mingw-w64-x86_64-opencv
 "C_Cpp.default.intelliSenseMode": "gcc-x64"
 ```
 
-### Step 4 编写项目Makefile文件
+### Step 4 编写项目 Makefile 文件
 
 ```makefile
-CC = g++ 
+CC = g++
 
-CFLAGS += -g -Wall -I/path/to/MSYS2/mingw64/include/opencv4 
+CFLAGS += -g -Wall -I/path/to/MSYS2/mingw64/include/opencv4
 
 LDFLAGS += -L/path/to/MSYS2/mingw64/lib \
 	-lopencv_aruco \

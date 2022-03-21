@@ -55,7 +55,7 @@ git.exe push -f git@github.com:SunYufei/sunyufei.github.io.git master
 Set-Location ..\..\..
 ```
 
-在运行时提示禁止运行，原因是PowerShell默认的执行策略是`RETRICTED`，即只能运行单独的命令，不允许运行脚本
+在运行时提示禁止运行，原因是 PowerShell 默认的执行策略是`RETRICTED`，即只能运行单独的命令，不允许运行脚本
 
 将执行策略修改为`REMOTESIGNED`即可运行用户自定义脚本和来自网络的已签名脚本
 
@@ -65,8 +65,7 @@ Set-ExecutionPolicy REMOTESIGNED
 
 修改运行策略后脚本可以正常运行，但生成的`CNAME`文件编码有误，[GitHub Pages](https://pages.github.com/) 不识别
 
-PowerShell 默认使用`UTF-16`编码，GitHub Pages要求`CNAME`文件使用`UTF-8`编码，在 PowerShell 的 `Out-File` 命令中指定输出文件编码即可
-
+PowerShell 默认使用`UTF-16`编码，GitHub Pages 要求`CNAME`文件使用`UTF-8`编码，在 PowerShell 的 `Out-File` 命令中指定输出文件编码即可
 
 ```powershell
 Write-Output "sunyufei.ml" | Out-File -Encoding utf8 CNAME

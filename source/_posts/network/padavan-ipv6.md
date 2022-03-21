@@ -27,14 +27,14 @@ date: 2019-05-21
 
 在管理后台`外部网络(WAN)`-`IPv6 设置`中设置：
 
-| 选项                           | 值            |
-| :----------------------------- | :------------ |
-| IPv6连接类型                   | Native DHCPv6 |
-| 获取 IPv6 外网地址             | Stateless: RA |
-| 自动获取 IPv6 DNS              | 启用          |
-| 通过 DHCPv6 获取内网 IPv6 地址 | 启用          |
-| 启用 LAN 路由器通告            | 启用          |
-| 启用 LAN DHCPv6 服务器         | Stateless (*) |
+| 选项                           | 值             |
+| :----------------------------- | :------------- |
+| IPv6 连接类型                  | Native DHCPv6  |
+| 获取 IPv6 外网地址             | Stateless: RA  |
+| 自动获取 IPv6 DNS              | 启用           |
+| 通过 DHCPv6 获取内网 IPv6 地址 | 启用           |
+| 启用 LAN 路由器通告            | 启用           |
+| 启用 LAN DHCPv6 服务器         | Stateless (\*) |
 
 若需要手动设置 IPv6 DNS，禁用`自动获取 IPv6 DNS`选项后手动设置 DNS 地址。
 
@@ -51,7 +51,6 @@ opkg install 6relayd    # 安装 6relayd
 
 这里`eth2.2`是 WAN 网口网卡名，可用`ifconfig`命令查看，一般不用更改。`br0`代表整个内网，一般不用更改。
 
-
 ## 4 开机自动安装并配置 6relayd 脚本
 
 将下面的脚本复制粘贴到`高级设置`-`自定义设置`-`脚本`-`在路由器启动之后执行`中最后即可实现开机自动安装配置 6relayd：
@@ -62,7 +61,7 @@ export PATH='/etc/storage/bin:/tmp/script:/etc/storage/script:/opt/usr/sbin:/opt
 export LD_LIBRARY_PATH=/lib:/opt/lib
 while ! [ -x "`which opkg`" ]
 do
-        logger -t "【6relayd】" "Waitting opt install"     
+        logger -t "【6relayd】" "Waitting opt install"
         sleep 3
 done
 while ! [ -x "`which 6relayd`" ]

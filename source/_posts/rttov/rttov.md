@@ -18,9 +18,9 @@ RTTOV，全称 Radiative Transferfor TOVS，具体是干啥的我不知道。安
 sudo apt install gfortran perl
 ```
 
-由于我的英语有些瑕疵，把手册中安装完成后的其他内容的下载当成了下一步操作，导致分给Linux的20GB很快就木有了。又划了80GB给Linux，继续安装。
+由于我的英语有些瑕疵，把手册中安装完成后的其他内容的下载当成了下一步操作，导致分给 Linux 的 20GB 很快就木有了。又划了 80GB 给 Linux，继续安装。
 
-手册中讲到需要先编译HDF5后再编译RTTOV，于是我就转到了HDF5的编译。在编译HDF5的过程中遇到了依赖库缺失的问题，编译未能继续，第一天结束。
+手册中讲到需要先编译 HDF5 后再编译 RTTOV，于是我就转到了 HDF5 的编译。在编译 HDF5 的过程中遇到了依赖库缺失的问题，编译未能继续，第一天结束。
 
 ## Day 2
 
@@ -38,17 +38,15 @@ sudo apt install gfortran perl
 sudo apt install build-essential gfortran
 ```
 
-接下来坑爹的地方来了，简书的这篇文章写了怎样编译zlib等库，但按照它给的步骤实际操作根本不能完成，因为文章中有些命令是错误的。于是我找到官方安装文档进行编译安装。
+接下来坑爹的地方来了，简书的这篇文章写了怎样编译 zlib 等库，但按照它给的步骤实际操作根本不能完成，因为文章中有些命令是错误的。于是我找到官方安装文档进行编译安装。
 
 zlib、hdf5、netcdf 编译安装成功，netcdf-fortran 编译失败，不知道原因在哪里。又进行不下去了，第二天结束。
-
 
 ## Day 3
 
 > [Arch Linux](https://archlinux.org/)是个好东西
 
-
-我到 Arch 仓库中搜了一下这几个包，都可以通过 `pacman` 安装。我将系统换成了Manjaro，一个基于 Arch Linux 的发行版。
+我到 Arch 仓库中搜了一下这几个包，都可以通过 `pacman` 安装。我将系统换成了 Manjaro，一个基于 Arch Linux 的发行版。
 
 **终于找到简便的安装方法了**
 
@@ -82,22 +80,23 @@ sudo pacman -S gcc make gcc-fortran zlib hdf5 netcdf netcdf-fortran
 
 ### Step 2 安装 Python 2
 
-到[Miniconda官网](https://conda.io/en/latest/miniconda.html)下载 Miniconda2
+到[Miniconda 官网](https://conda.io/en/latest/miniconda.html)下载 Miniconda2
 
-安装Miniconda2，安装过程中注意将Miniconda加入环境变量
+安装 Miniconda2，安装过程中注意将 Miniconda 加入环境变量
 
 ```bash
 sh Miniconda2-*.sh
 ```
 
-安装RTTOV GUI的依赖库，注意wxpython版本
+安装 RTTOV GUI 的依赖库，注意 wxpython 版本
+
 ```bash
 conda install numpy scipy h5py matplotlib wxpython==3.0.0
 ```
 
 ### Step 3 下载 RTTOV 12.2
 
-到官网下载RTTOV12.2，下载完成后解压
+到官网下载 RTTOV12.2，下载完成后解压
 
 ```bash
 # 在家目录下安装
@@ -106,7 +105,7 @@ mkdir rttov12
 tar -zxvf rttov122.tar.gz -C rttov12
 ```
 
-### Step 4 修改build/Makefile.local
+### Step 4 修改 build/Makefile.local
 
 ```bash
 cd rttov12
@@ -129,17 +128,17 @@ FFLAGS_NETCDF =-D_RTTOV_NETCDF -I$(NETCDF_PREFIX)/include
 LDFLAGS_NETCDF =-L$(NETCDF_PREFIX)/lib -lnetcdff
 ```
 
-### Step 5 编译RTTOV
+### Step 5 编译 RTTOV
 
 ```bash
 cd rttov12
 # 需要在此目录下进行编译
 cd src
 # 根据提示进行编译安装，可根据实际情况调整编译参数
-../build/rttov_compile.sh  
+../build/rttov_compile.sh
 ```
 
-测试RTTOV安装情况
+测试 RTTOV 安装情况
 
 ```bash
 cd rttov12
@@ -147,7 +146,7 @@ cd rttov_test
 sh test_rttov12.sh ARCH=gfortran
 ```
 
-### Step 6 配置GUI环境
+### Step 6 配置 GUI 环境
 
 修改`rttov_gui.env`文件
 
@@ -158,11 +157,12 @@ nano rttov_gui.env
 ```
 
 在`RTTOV_GUI_PREFIX=`后添加
+
 ```bash
 /home/{username}/rttov12/gui
 ```
 
-### Step 7 运行RTTOV
+### Step 7 运行 RTTOV
 
 ```bash
 cd rttov12
@@ -182,4 +182,4 @@ source rttov_gui.env
 1. [Manjaro Linux](https://manjaro.org/)
 1. [RTTOV12.2 (Radiative Transfer for TOVS) 研究环境搭建（二）on WSL Ubuntu LTS 18.04](https://www.jianshu.com/p/ba81ce2ca81e)
 
-推荐一波Manjaro Linux
+推荐一波 Manjaro Linux

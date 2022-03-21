@@ -7,8 +7,8 @@ date: 2020-03-07
 
 <!--more-->
 
-> 2021年更新：Google Team Drive已被禁用
-> 
+> 2021 年更新：Google Team Drive 已被禁用
+>
 > 3 月 15 日更新：调整文章结构，增加新内容
 
 # 最终效果
@@ -175,14 +175,14 @@ GoIndex 可以实现在线播放网盘中的视频，这点非常重要，准备
 
 ```javascript
 var authConfig = {
-    "siteName": "GoIndex", // 网站名称
-    "root_pass": "",  // 根目录密码，优先于.password
-    "version" : "1.0.7", // 程序版本
-    "theme" : "material", // material  classic 
-    "client_id": "",
-    "client_secret": "",
-    "refresh_token": "", // 授权 token
-    "root": "" // 根目录ID
+  siteName: "GoIndex", // 网站名称
+  root_pass: "", // 根目录密码，优先于.password
+  version: "1.0.7", // 程序版本
+  theme: "material", // material  classic
+  client_id: "",
+  client_secret: "",
+  refresh_token: "", // 授权 token
+  root: "", // 根目录ID
 };
 ```
 
@@ -211,7 +211,7 @@ MKLINK [[/D] | [/H] | [/J]] Link Target
 例如，对 `D:\Videos` 文件夹建立软链接，让 OneDrive 对其同步：
 
 ```bat
-mklink /j "C:\Users\USER\OneDrive\Videos" "D:\Videos" 
+mklink /j "C:\Users\USER\OneDrive\Videos" "D:\Videos"
 ```
 
 ### 2.2 Cloudflare +“OneIndex”
@@ -269,11 +269,13 @@ GoIndex 默认的 material 主题在视频播放页面会有文件链接等内�
 <!-- 固定标签 -->
 <div class="mdui-textfield">
   <label class="mdui-textfield-label">下载地址</label>
-  <input class="mdui-textfield-input" type="text" value="${url}"/>
+  <input class="mdui-textfield-input" type="text" value="${url}" />
 </div>
 <div class="mdui-textfield">
   <label class="mdui-textfield-label">HTML 引用地址</label>
-  <textarea class="mdui-textfield-input"><video><source src="${url}" type="video/mp4"></video></textarea>
+  <textarea class="mdui-textfield-input">
+<video><source src="${url}" type="video/mp4"></video></textarea
+  >
 </div>
 ```
 
@@ -334,4 +336,3 @@ jobs:
 4. [FODI](https://github.com/vcheckzen/FODI)
 5. [Rclone Docs](https://rclone.org/docs/)
 6. [GitHub Actions for rclone](https://github.com/marketplace/actions/github-action-for-rclone)
-   

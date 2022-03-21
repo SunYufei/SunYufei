@@ -4,7 +4,7 @@ categories: Linux
 date: 2021-10-05
 ---
 
-手中有个Rock64开发板，刷入了Armbian，记录一下配置过程
+手中有个 Rock64 开发板，刷入了 Armbian，记录一下配置过程
 
 <!--more-->
 
@@ -29,13 +29,13 @@ deb https://mirrors.bfsu.edu.cn/armbian bullseye main bullseye-utils
 
 ## zsh
 
-安装zsh及插件
+安装 zsh 及插件
 
 ```shell
 sudo apt install zsh zsh-autosuggestions zsh-syntax-highlighting zsh-theme-powerlevel9k
 ```
 
-启用zsh
+启用 zsh
 
 ```shell
 chsh -s /usr/bin/zsh
@@ -69,7 +69,7 @@ bindkey "\e[F" end-of-line
 bindkey '^i' expand-or-complete-prefix
 ```
 
-为root用户建立zshrc连接
+为 root 用户建立 zshrc 连接
 
 ```shell
 sudo ln -s /home/$USER/.zshrc /root/.zshrc
@@ -87,7 +87,7 @@ sudo ln -s /home/$USER/.zshrc /root/.zshrc
 
 ## Samba
 
-安装samba
+安装 samba
 
 ```shell
 sudo apt install samba
@@ -100,7 +100,7 @@ sudo chown -R $USER:root /mnt/sda
 sudo chmod -R 755 /mnt/sda
 ```
 
-添加samba用户
+添加 samba 用户
 
 ```shell
 sudo smbpasswd -a $USER$
@@ -126,13 +126,13 @@ sudo service smbd restart
 
 ## rclone
 
-安装rclone
+安装 rclone
 
 ```shell
 sudo apt install rclone
 ```
 
-建立root用户的rclone.conf连接
+建立 root 用户的 rclone.conf 连接
 
 ```shell
 sudo ln -s /home/$USER/.config/rclone/rclone.conf /root/.config/rclone/rclone.conf
@@ -140,7 +140,7 @@ sudo ln -s /home/$USER/.config/rclone/rclone.conf /root/.config/rclone/rclone.co
 
 ## 阿里云盘 WebDAV
 
-编写启动脚本 run.sh，注意替换TOKEN，端口号可自定义
+编写启动脚本 run.sh，注意替换 TOKEN，端口号可自定义
 
 ```bash
 #!/bin/bash
@@ -351,8 +351,7 @@ fi
 service aria2 start
 ```
 
-新增一项定时任务，将 `0 3 * * * root sh /opt/aria2/aria2-tracker.sh
-` 添加至 /etc/crontab 末尾
+新增一项定时任务，将 `0 3 * * * root sh /opt/aria2/aria2-tracker.sh ` 添加至 /etc/crontab 末尾
 
 ### 配置 AriaNG + Nginx
 
@@ -392,7 +391,7 @@ server {
 sudo ln -s /etc/nginx/sites-available/aria2.conf /etc/nginx/sites-enabled/aria2.conf
 ```
 
-重启Nginx
+重启 Nginx
 
 ```shell
 sudo service nginx restart
@@ -419,6 +418,7 @@ echo ${BINURL/github.com/hub.fastgit.org} | wget --no-verbose -i- -O- | gzip -d 
 
 chmod +x $BIN
 ```
+
 ### 添加服务
 
 修改`/etc/systemd/system/qbittorrent-nox.service`，填入如下内容
@@ -556,7 +556,7 @@ prefix = "docker.io"
 location = "zs2joo3y.mirror.aliyuncs.com"
 ```
 
-### Rootless配置
+### Rootless 配置
 
 修改`/usr/share/containers/containers.conf`，启用如下内容
 
@@ -578,7 +578,7 @@ sudo mkdir -p /mnt/sda/containers
 sudo ln -s /mnt/sda/containers/ /home/$USER/.local/share/containers
 ```
 
-### 重启Podman服务
+### 重启 Podman 服务
 
 ```shell
 service podman restart

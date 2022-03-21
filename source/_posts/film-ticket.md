@@ -10,6 +10,7 @@ date: 2020-01-29
 <!--more-->
 
 本文主要包含如下内容：
+
 1. 抢票原理及实现
 2. GitHub Actions 部署
 3. 怎样部署自己的抢票工具
@@ -18,19 +19,19 @@ date: 2020-01-29
 
 首先来讲一下抢票原理。用程序模拟人访问文化崂山网站，进行登录、抢票等操作，主要用到 requests 库。
 
-整个代码的核心是一个 Session对象，用于保持登录状态。
+整个代码的核心是一个 Session 对象，用于保持登录状态。
 
 ```python
 session = requests.Session()
 ```
 
-主要包含5大模块：
+主要包含 5 大模块：
+
 1. 余票查询
 1. 登录
 1. 订单查询
 1. 订票
 1. 删票
-
 
 ### 登录
 
@@ -102,12 +103,12 @@ r = session.post(url, data)
 
 服务端返回一个数字，表示删票成功与否。
 
-
 ## GitHub Actions 部署
 
-GitHub Actions 是 DevOps 的一种体现形式。B站看到利用 GitHub Actions 实现博客网站的自动编译部署。GitHub 会在每次提交代码后自动将博客源文件编译成静态网站部署到 GitHub Pages 中。
+GitHub Actions 是 DevOps 的一种体现形式。B 站看到利用 GitHub Actions 实现博客网站的自动编译部署。GitHub 会在每次提交代码后自动将博客源文件编译成静态网站部署到 GitHub Pages 中。
 
-看了一下GitHub Actions的官方文档后，我准备做两个事情：
+看了一下 GitHub Actions 的官方文档后，我准备做两个事情：
+
 1. 搭建全自动部署的博客（搭建中，GitHub 和 Coding 双备份）
 1. 文化崂山全自动抢票（已实现）
 
@@ -119,11 +120,11 @@ name: autorun
 # 在提交代码时运行 actions
 on: [push]
 jobs:
-  autorun:	# job id
+  autorun: # job id
     name: autorun
-    runs-on: ubuntu-latest	# 运行环境
+    runs-on: ubuntu-latest # 运行环境
     steps:
-      - uses: actions/checkout@v2	# pull 仓库代码
+      - uses: actions/checkout@v2 # pull 仓库代码
       - name: install requirements
         run: pip3 install -r requirements.txt
       - name: run code

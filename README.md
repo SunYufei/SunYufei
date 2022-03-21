@@ -1,7 +1,7 @@
 # blog
 
-- Generator: Hexo 5.4.0
-- Theme: hexo-theme-next 8.7.1
+- Generator: Hexo 6.1.0
+- Theme: hexo-theme-next 8.10.1
 - Deploy: Vercel
 
 # License
