@@ -15,12 +15,14 @@
 <p align='center'>
    <img src='https://img.shields.io/badge/C%2FC++-%2300599c?style=flat&logo=c&logoColor=white' />
    <img src='https://img.shields.io/badge/Python3-%233776ab?style=flat&logo=python&logoColor=white' />
+   <!--
    <img src='https://img.shields.io/badge/Java-%23e6892e?style=flat&logo=java&logoColor=white' />
    <img src='https://img.shields.io/badge/TypeScript-%233178c6?style=flat&logo=typescript&logoColor=white' />
+   -->
    <img src='https://img.shields.io/badge/Spring%20Boot-%236db33f?style=flat&logo=springboot&logoColor=white' />
    <img src='https://img.shields.io/badge/Next.js-%23000000?style=flat&logo=nextdotjs&logoColor=white' />
    <img src='https://img.shields.io/badge/Nuxt.js-%2300dc82?style=flat&logo=nuxtdotjs&logoColor=white' />
-   <img src='https://img.shields.io/badge/VitePress-%234fc08d?style=flat&logo=vuedotjs&logoColor=white' />
+   <img src='https://img.shields.io/badge/VitePress-%2342b883?style=flat&logo=vuedotjs&logoColor=white' />
 </p>
 
 <!--
