@@ -19,7 +19,8 @@
    <img src='https://img.shields.io/badge/TypeScript-%233178c6?style=flat&logo=typescript&logoColor=white' />
    <img src='https://img.shields.io/badge/Spring%20Boot-%236db33f?style=flat&logo=springboot&logoColor=white' />
    <img src='https://img.shields.io/badge/Next.js-%23000000?style=flat&logo=nextdotjs&logoColor=white' />
-   <img src='https://img.shields.io/badge/VuePress-%234fc08d?style=flat&logo=vuedotjs&logoColor=white' />
+   <img src='https://img.shields.io/badge/Nuxt.js-%2300dc82?style=flat&logo=nuxtdotjs&logoColor=white' />
+   <img src='https://img.shields.io/badge/VitePress-%234fc08d?style=flat&logo=vuedotjs&logoColor=white' />
 </p>
 
 <!--
