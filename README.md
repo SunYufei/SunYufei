@@ -7,7 +7,7 @@
 <p align='center'>
    <a href='https://blog.sunyufei.ml'>Blog(暂不可用)</a>
    •
-   <a href='https://sunyufei.ml'>Notes(维护中)</a>
+   <a href='https://sunyufei.netlify.app'>Notes(维护中)</a>
    •
    <a href='mailto:sunyufei963@qq.com'>Email</a>
 </p>
