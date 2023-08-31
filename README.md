@@ -7,7 +7,7 @@
 <p align='center'>
    <a href='https://blog.sunyufei.ml'>Blog(暂不可用)</a>
    •
-   <a href='https://sunyufei.netlify.app'>Notes(维护中)</a>
+   <a href='https://sunyufei.netlify.app'>Notes</a>
    •
    <a href='mailto:sunyufei963@qq.com'>Email</a>
 </p>
@@ -44,6 +44,7 @@
 
 <p align='center'>
    <img src='https://img.shields.io/badge/GitHub-%2357606a?style=flat&logo=github&logoColor=white' />
+   <img src='https://img.shields.io/badge/Netlify-%2305BDBA?style=flat&logo=netlify&logoColor=white' />
    <img src='https://img.shields.io/badge/Vercel-%23000000?style=flat&logo=vercel&logoColor=white' />
    <img src='https://img.shields.io/badge/Cloudflare-%23f38020?style=flat&logo=cloudflare&logoColor=white' />
 </p>
