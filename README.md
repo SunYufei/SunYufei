@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-   <img src="https://skillicons.dev/icons?i=spring,svelte,pnpm,vite,vitest">
+   <img src="https://skillicons.dev/icons?i=spring,svelte,bun,vite">
 </p>
 
 <p align="center">
